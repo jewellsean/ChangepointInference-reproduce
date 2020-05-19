@@ -24,7 +24,7 @@ ymax <- 3
 p0 <- data.frame(x = 1:n, y = y, mu = mu) %>% 
   ggplot() + 
   geom_point(aes(x, y), color = "gray", size = 0.5) +
-  geom_line(aes(x, mu), color = "darkblue") + 
+  geom_step(aes(x, mu), color = "darkblue") + 
   ggtitle(TeX(paste0("a) Original data ($\\phi =", vTy, ")$"))) + 
   ylab(TeX("$y'(\\phi)$")) +
   coord_cartesian(ylim = c(0, ymax)) +
@@ -37,7 +37,7 @@ p1 <- data.frame(x = 1:n, y = yphi, mu = mu) %>%
   ggplot() + 
   geom_point(aes(x, y), color = col_red, size = 0.5) +
   ggtitle(TeX(paste0("b) Perturbed data ($\\phi = $", phi, ")"))) +
-  geom_line(aes(x, mu), color = "darkblue") + 
+  geom_step(aes(x, mu), color = "darkblue") + 
   ylab('') +
   coord_cartesian(ylim = c(0, ymax)) +
   theme_bw()
@@ -49,7 +49,7 @@ p2 <- data.frame(x = 1:n, y = yphi, mu = mu) %>%
   geom_point(aes(x, y), color = col_blue, size = 0.5) +
   ylab('') +
   ggtitle(TeX(paste0("c) Perturbed data ($\\phi = $", phi, ")"))) +
-  geom_line(aes(x, mu), color = "darkblue") + 
+  geom_step(aes(x, mu), color = "darkblue") + 
   coord_cartesian(ylim = c(0, ymax)) +
   theme_bw()
 

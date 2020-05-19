@@ -34,7 +34,7 @@ plot_data_changepts_rejection <- function(out, title) {
   
   q <- data.frame(x = 1:length(y), y = y) %>% 
     ggplot() + 
-    geom_line(data = data.frame(x = 1:length(y), mu = underlying_mean), aes(x, mu), color = "darkblue", lwd = 1) + 
+    geom_step(data = data.frame(x = 1:length(y), mu = underlying_mean), aes(x, mu), color = "darkblue", lwd = 1) + 
     geom_vline(data = chg_cols, aes(xintercept = x, color = reject), lwd = 0.5) + 
     geom_point(aes(x, y), alpha = 0.5) +
     ylab("") + 
