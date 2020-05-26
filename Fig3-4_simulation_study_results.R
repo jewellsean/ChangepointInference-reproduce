@@ -32,6 +32,16 @@ n <- length(underlying_mean)
 true_changepts <- which(underlying_mean[2:n] != underlying_mean[1:(n - 1)])
 k <- length(true_changepts)
 
+df_underlying <- NULL
+last_chg_pt <- 0
+for (i in 1:k) {
+  df_underlying <- rbind(df_underlying, 
+                         data.frame(x0 = last_chg_pt + 1, xend = true_changepts[i], y0 = underlying_mean[true_changepts[i]], yend = underlying_mean[true_changepts[i]]))
+  last_chg_pt <- true_changepts[i]
+} 
+df_underlying <- rbind(df_underlying, 
+                       data.frame(x0 = last_chg_pt + 1, xend = n, y0 = underlying_mean[n], yend = underlying_mean[n]))
+
 DETECTION_THRESHOLD <- 2
 DETECTION_THRESHOLD_SAMPLE_SPLIT <- DETECTION_THRESHOLD
 REJECTION_THRESHOLD <- 0.05
@@ -58,9 +68,9 @@ set.seed(1)
 y <- underlying_mean + rnorm(n)
 q <- data.frame(x = 1:length(y), y = y) %>% 
   ggplot() + 
-  geom_step(data = data.frame(x = 1:length(y), mu = underlying_mean), aes(x, mu), color = "darkblue", lwd = 1) + 
-  geom_vline(data = data.frame(x = true_changepts), aes(xintercept = x),  color = "grey", lwd = 0.5) + 
   geom_point(aes(x, y), alpha = 0.5) +
+  geom_vline(data = data.frame(x = true_changepts), aes(xintercept = x),  color = "grey", lwd = 0.5) + 
+  geom_segment(data = df_underlying, aes(x=x0, y=y0, xend=xend, yend=yend), color = "darkblue", lwd = 1) +
   ylab("") + 
   xlab("") + 
   ggtitle("a)") +

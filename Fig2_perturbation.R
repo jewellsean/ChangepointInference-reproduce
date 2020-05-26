@@ -13,6 +13,18 @@ mu <- rep(c(1, 2), each = 100)
 n <- length(mu)
 y <- mu + rnorm(n, sd = 0.1)
 
+true_changepts <- which(mu[2:n] != mu[1:(n - 1)])
+k <- length(true_changepts)
+df_underlying <- NULL
+last_chg_pt <- 0
+for (i in 1:k) {
+  df_underlying <- rbind(df_underlying, 
+                         data.frame(x0 = last_chg_pt + 1, xend = true_changepts[i], y0 = mu[true_changepts[i]], yend = mu[true_changepts[i]]))
+  last_chg_pt <- true_changepts[i]
+} 
+df_underlying <- rbind(df_underlying, 
+                       data.frame(x0 = last_chg_pt + 1, xend = n, y0 = mu[n], yend = mu[n]))
+
 ## BS-adaptive-M inference
 k <- 1
 fit <- changepoint_inference(y, "BS-adaptive-M", 1, return_conditioning_sets = TRUE)
@@ -24,7 +36,7 @@ ymax <- 3
 p0 <- data.frame(x = 1:n, y = y, mu = mu) %>% 
   ggplot() + 
   geom_point(aes(x, y), color = "gray", size = 0.5) +
-  geom_step(aes(x, mu), color = "darkblue") + 
+  geom_segment(data = df_underlying, aes(x=x0, y=y0, xend=xend, yend=yend), color = "darkblue", lwd = 1) +
   ggtitle(TeX(paste0("a) Original data ($\\phi =", vTy, ")$"))) + 
   ylab(TeX("$y'(\\phi)$")) +
   coord_cartesian(ylim = c(0, ymax)) +
@@ -37,7 +49,7 @@ p1 <- data.frame(x = 1:n, y = yphi, mu = mu) %>%
   ggplot() + 
   geom_point(aes(x, y), color = col_red, size = 0.5) +
   ggtitle(TeX(paste0("b) Perturbed data ($\\phi = $", phi, ")"))) +
-  geom_step(aes(x, mu), color = "darkblue") + 
+  geom_segment(data = df_underlying, aes(x=x0, y=y0, xend=xend, yend=yend), color = "darkblue", lwd = 1) +
   ylab('') +
   coord_cartesian(ylim = c(0, ymax)) +
   theme_bw()
@@ -49,7 +61,7 @@ p2 <- data.frame(x = 1:n, y = yphi, mu = mu) %>%
   geom_point(aes(x, y), color = col_blue, size = 0.5) +
   ylab('') +
   ggtitle(TeX(paste0("c) Perturbed data ($\\phi = $", phi, ")"))) +
-  geom_step(aes(x, mu), color = "darkblue") + 
+  geom_segment(data = df_underlying, aes(x=x0, y=y0, xend=xend, yend=yend), color = "darkblue", lwd = 1) +
   coord_cartesian(ylim = c(0, ymax)) +
   theme_bw()
 
